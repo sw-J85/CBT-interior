@@ -149,14 +149,16 @@ function updateStatsUI() {
     ? 0
     : Math.floor((correctCount / (correctCount + wrongCount)) * 100);
 
-  const hours = Math.floor(totalTime / 3600);
-  const mins = Math.floor((totalTime % 3600) / 60);
+  // 🔥 totalTime(초 단위)을 hh:mm:ss로 변환
+  const hours = String(Math.floor(totalTime / 3600)).padStart(2, "0");
+  const mins = String(Math.floor((totalTime % 3600) / 60)).padStart(2, "0");
+  const secs = String(totalTime % 60).padStart(2, "0");
 
   document.getElementById("stats").innerHTML = `
     📊 정답률: ${rate}% 
     | ✔ 정답: ${correctCount} 
     | ✖ 오답: ${wrongCount} 
-    | ⏱ 누적 학습시간: ${hours}시간 ${mins}분
+    | ⏱ 누적 학습시간: ${hours}:${mins}:${secs}
   `;
 }
 
@@ -215,6 +217,7 @@ function logout() {
     location.href = "index.html";
   });
 }
+
 
 
 
