@@ -18,30 +18,9 @@ async function loadProblems() {
 }
 
 
-// ======================
-//  CSV 안전 파서
-//  (따옴표 안 콤마 처리)
-// ======================
-function parseCSVLine(line) {
-  const result = [];
-  let insideQuotes = false;
-  let value = "";
 
-  for (let char of line) {
-    if (char === '"') {
-      insideQuotes = !insideQuotes;
-      continue;
-    }
-    if (char === "," && !insideQuotes) {
-      result.push(value.trim());
-      value = "";
-      continue;
-    }
-    value += char;
-  }
-  result.push(value.trim());
-  return result;
-}
+
+
 
 
 //엑셀 업로드//
@@ -73,15 +52,42 @@ auth.onAuthStateChanged(async user => {
     wrongCount = data.wrongCount || 0;
   }
 
-  questions = await loadCSV();
+  // ======================
+// Firestore 문제 로딩
+// ======================
+async function loadProblems() {
+  const snap = await db.collection("problems").get();
+  return snap.docs.map(doc => doc.data());
+}
 
-  // 🔥 전체 랜덤 모드 적용
+// ======================
+// 로그인 후 문제 로딩
+// ======================
+auth.onAuthStateChanged(async user => {
+  if (!user) return location.href = "index.html";
+
+  // (선택) 사용자 기록 불러오기
+  const docRef = db.collection("users").doc(user.uid);
+  const snap = await docRef.get();
+  if (snap.exists) {
+      const data = snap.data();
+      totalTime = data.totalTime || 0;
+      correctCount = data.correctCount || 0;
+      wrongCount = data.wrongCount || 0;
+  }
+
+  // ⭐ CSV 대신 Firestore에서 문제 불러오기 ⭐
+  questions = await loadProblems();
+
+  // ⭐ 랜덤 섞기
   shuffle(questions);
 
-  startTime = Date.now();    // 세션 시작
+  // 시작
+  startTime = Date.now();
   showQuestion();
   updateStatsUI();
 });
+
 
 
 
@@ -249,6 +255,7 @@ function logout() {
     location.href = "index.html";
   });
 }
+
 
 
 
