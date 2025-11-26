@@ -1,5 +1,5 @@
 // =============================
-//  Firestore에서 문제 불러오기
+// 전역 변수
 // =============================
 let questions = [];
 let current = 0;
@@ -8,6 +8,9 @@ let wrongCount = 0;
 let totalTime = 0;
 let timer = null;
 
+// =============================
+// 문제 불러오기 (async 필수)
+// =============================
 async function loadProblems() {
   const snap = await db.collection("problems").get();
   questions = snap.docs.map(doc => doc.data());
@@ -46,10 +49,10 @@ function showQuestion() {
 // 정답 제출
 // =============================
 function submitAnswer() {
-  const user = document.getElementById("answer").value.trim();
+  const input = document.getElementById("answer").value.trim();
   const correct = String(questions[current].answer).trim();
 
-  if (user === correct) {
+  if (input === correct) {
     correctCount++;
     document.getElementById("result").innerText = "✔ 정답!";
   } else {
@@ -68,33 +71,34 @@ function nextQuestion() {
 
   if (current >= questions.length) {
     finishExam();
-  } else {
-    showQuestion();
+    return;
   }
+
+  showQuestion();
 }
 
 // =============================
-// 힌트 보기 (book + page 사용)
+// 힌트(book + page)
 // =============================
 function showHint() {
   const q = questions[current];
-  const hint = `📘 교재: ${q.book} | 📄 페이지: ${q.page}`;
-  document.getElementById("hint").innerText = hint;
+  const hintText = `📘 교재: ${q.book} | 📄 페이지: ${q.page}`;
+  document.getElementById("hint").innerText = hintText;
 }
 
 // =============================
-// 정답률/시간 표시
+// 정답률 / 시간 업데이트
 // =============================
 function updateStats() {
   const total = correctCount + wrongCount;
-  const rate = (total === 0) ? 0 : Math.floor((correctCount / total) * 100);
+  const rate = total === 0 ? 0 : Math.floor((correctCount / total) * 100);
 
-  const hours = Math.floor(totalTime / 3600);
+  const hrs = Math.floor(totalTime / 3600);
   const mins = Math.floor((totalTime % 3600) / 60);
   const secs = totalTime % 60;
 
   document.getElementById("stats").innerText =
-    `정답률: ${rate}% | ✔ ${correctCount} | ✖ ${wrongCount} | ⏱ ${hours}h ${mins}m ${secs}s`;
+    `정답률: ${rate}% | ✔ ${correctCount} | ✖ ${wrongCount} | ⏱ ${hrs}h ${mins}m ${secs}s`;
 }
 
 // =============================
@@ -122,7 +126,7 @@ function resetStats() {
 }
 
 // =============================
-// 시험 끝
+// 시험 종료 + 기록 저장
 // =============================
 function finishExam() {
   clearInterval(timer);
@@ -134,15 +138,15 @@ function finishExam() {
 }
 
 // =============================
-// Firestore에 기록 저장
+// Firestore 기록 저장
 // =============================
 async function saveRecord() {
   await db.collection("records").add({
+    date: new Date(),
+    total: questions.length,
     correct: correctCount,
     wrong: wrongCount,
-    total: questions.length,
-    time: totalTime,
-    date: new Date()
+    time: totalTime
   });
 
   document.getElementById("result").innerText =
@@ -161,4 +165,6 @@ function logout() {
 // =============================
 // 시작
 // =============================
-window.onload = loadProblems;
+window.onload = () => {
+  loadProblems();
+};
