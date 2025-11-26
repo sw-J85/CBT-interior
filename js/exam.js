@@ -69,9 +69,11 @@ function showQuestion() {
 
   document.getElementById("question").innerHTML = `
     <b>Q${index + 1}.</b> ${q.question}
+    <div class="creator-tag">출제자: ${q.creator}</div>
   `;
 
   document.getElementById("hint").innerHTML = "";
+  document.getElementById("result").style.display = "none";
   document.getElementById("answer").value = "";
 }
 
@@ -225,6 +227,7 @@ function logout() {
     location.href = "index.html";
   });
 }
+
 
 
 
