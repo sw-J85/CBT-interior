@@ -18,7 +18,7 @@ async function loadCSV() {
 
   const rows = lines.map(line => line.split(","));
 
-  return rows.map(row => ({
+    return rows.slice(1).map(row => ({
     id: row[0]?.trim(),
     question: row[1]?.trim(),
     answer: row[2]?.trim(),
@@ -26,6 +26,7 @@ async function loadCSV() {
     page: row[4]?.trim(),
     creator: row[5]?.trim()
   }));
+
 }
 
 
@@ -94,6 +95,7 @@ function showHint() {
     📘 <b>힌트:</b> ${q.book} / p.${q.page}
   `;
 }
+
 
 
 
