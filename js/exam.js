@@ -10,6 +10,15 @@ console.log("loadCSV start");
 
 
 // ======================
+// Firestore 문제 로딩
+// ======================
+async function loadProblems() {
+  const snap = await db.collection("problems").get();
+  return snap.docs.map(doc => doc.data());
+}
+
+
+// ======================
 //  CSV 안전 파서
 //  (따옴표 안 콤마 처리)
 // ======================
@@ -240,6 +249,7 @@ function logout() {
     location.href = "index.html";
   });
 }
+
 
 
 
