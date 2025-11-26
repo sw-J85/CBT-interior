@@ -4,21 +4,27 @@ let startTime = 0;
 
 // CSV 로드 (id,question,answer,book,page,creator)
 async function loadCSV() {
-  const response = await fetch("https://raw.githubusercontent.com/sw-J85/CBT-interior/main/data/questions.txt");
+  const response = await fetch("./data/questions.txt");
   const text = await response.text();
-  const rows = text.split("\n").map(r => r.split(","));
 
-  rows.shift(); // 헤더 제거
+  const lines = text
+    .trim()                         // 빈 줄 제거
+    .replace(/^\uFEFF/, "")         // BOM 제거
+    .split("\n")                    // 줄 단위로 나누기
+    .filter(line => line.trim() !== "");  // 완전 빈 줄 제거
+
+  const rows = lines.map(line => line.split(","));
 
   return rows.map(row => ({
-    id: row[0],
-    question: row[1].replace(/(^"|"$)/g, ""),  // 따옴표 제거
-    answer: row[2].trim(),
-    book: row[3],
-    page: row[4],
-    creator: row[5]
+    id: row[0]?.trim(),
+    question: row[1]?.trim(),
+    answer: row[2]?.trim(),
+    book: row[3]?.trim(),
+    page: row[4]?.trim(),
+    creator: row[5]?.trim()
   }));
 }
+
 
 // 로그인 확인 후 문제 시작
 auth.onAuthStateChanged(async user => {
@@ -85,4 +91,5 @@ function showHint() {
     📘 <b>힌트:</b> ${q.book} / p.${q.page}
   `;
 }
+
 
