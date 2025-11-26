@@ -24,6 +24,7 @@ body.dark {
 .hw-header {
   position: relative;
   width: 100%;
+  padding-right: 60px;
   padding: 18px 20px;
   background: var(--navy);
   color: #fff;
@@ -200,6 +201,7 @@ body.dark {
   display: none;
   border-radius: 6px;
 }
+
 
 
 
