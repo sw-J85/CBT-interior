@@ -5,17 +5,21 @@
   <title>CBT 관리자 페이지</title>
   <link rel="stylesheet" href="./css/style.css">
 
+  <!-- Firebase v8 SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-  <!-- 🔥 XLSX 라이브러리 추가 (여기!) -->
+  <!-- 🔥 XLSX 라이브러리 (반드시 여기서 로드해야 함) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-
+  <!-- Firebase Config -->
   <script src="./js/firebase-config.js"></script>
+
+  <!-- Admin Logic -->
   <script src="./js/admin.js"></script>
 </head>
+
 <body class="dark">
 
 <h2>문제 업로드 (관리자 전용)</h2>
