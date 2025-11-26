@@ -39,7 +39,7 @@ function parseCSVLine(line) {
 //  CSV/TXT 파일 로드
 // ======================
 async function loadCSV() {
-  const response = await fetch("./data/questions.txt");
+  const response = await fetch("./data/questions.csv");
   const text = await response.text();
 
   const lines = text
@@ -251,3 +251,4 @@ function logout() {
     location.href = "index.html";
   });
 }
+
