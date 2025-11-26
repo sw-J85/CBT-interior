@@ -1,1 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>CBT 관리자 페이지</title>
+  <link rel="stylesheet" href="./css/style.css">
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script src="./js/firebase-config.js"></script>
+  <script src="./js/admin.js"></script>
+</head>
+<body class="dark">
+
+<h2>문제 업로드 (관리자 전용)</h2>
+
+<div id="admin-check">관리자 인증 확인중...</div>
+
+<div id="upload-area" style="display:none;">
+  <input type="file" id="excelFile" accept=".xlsx" />
+  <button onclick="uploadExcel()">엑셀 업로드</button>
+
+  <h3>업로드 미리보기</h3>
+  <pre id="preview" style="white-space:pre-wrap;"></pre>
+</div>
+
+</body>
+</html>
 
