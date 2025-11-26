@@ -4,7 +4,7 @@ let startTime = 0;
 
 // CSV 로드 (id,question,answer,book,page,creator)
 async function loadCSV() {
-  const response = await fetch("./data/questions.csv");
+  const response = await fetch("./data/questions.txt");
   const text = await response.text();
   const rows = text.split("\n").map(r => r.split(","));
 
