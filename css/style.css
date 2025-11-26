@@ -38,8 +38,7 @@ body.dark {
   color: var(--gold);
   padding: 6px 12px;
   cursor: pointer;
-  clip-path: polygon(8% 0%, 100% 0%, 100% 80%, 92% 100%, 0% 100%, 0% 20%);
-}
+  }
 
 .hw-btn-logout:hover {
   background: var(--gold);
@@ -93,15 +92,22 @@ body.dark {
 .hw-btn-submit,
 .hw-btn-next,
 .hw-btn-hint,
-.hw-btn-reset {
+.hw-btn-reset,
+.hw-btn-logout {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   border: none;
   cursor: pointer;
-  clip-path: polygon(4% 0%, 100% 0%, 100% 85%, 96% 100%, 0% 100%, 0% 15%);
-  margin-bottom: 12px;
-  font-size: 16px;
+  margin-bottom: 10px;
+  font-size: 15px;
+
+  /* 육각형 제거 */
+  clip-path: none !important;
+
+  /* 기본 라운드 버튼으로 변경 */
+  border-radius: 8px;
 }
+
 
 /* 버튼 색 지정 */
 .hw-btn-submit,
@@ -143,6 +149,7 @@ body.dark {
 .hw-card {
   padding: 26px;     /* 기존 22px → 26px */
 }
+
 
 
 
