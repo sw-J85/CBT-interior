@@ -150,6 +150,18 @@ body.dark {
   padding: 26px;     /* 기존 22px → 26px */
 }
 
+.hw-result {
+  margin-top: 10px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 4px solid var(--gold);
+  color: var(--gold);
+  font-size: 16px;
+  display: none;
+  border-radius: 6px;
+}
+
+
 
 
 
