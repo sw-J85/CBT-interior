@@ -22,29 +22,48 @@ body.dark {
 
 /* HEADER */
 .hw-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 22px;
+  position: relative;
+  width: 100%;
+  padding: 18px 20px;
   background: var(--navy);
-  color: white;
+  color: #fff;
+  display: flex;
+  justify-content: center;   /* 중앙 기준 정렬 */
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+/* 좌측 HIVEWORKS */
+.hw-left {
+  position: absolute;
+  left: 20px;
+  font-size: 18px;
   font-weight: 600;
 }
 
-/* LOGOUT 버튼 */
+/* 중앙 타이틀 */
+.hw-center {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* 우측 LOGOUT */
 .hw-btn-logout {
+  position: absolute;
+  right: 20px;
   background: transparent;
   border: 2px solid var(--gold);
   color: var(--gold);
   padding: 6px 12px;
   cursor: pointer;
-  position: static !important;
-  }
+}
 
 .hw-btn-logout:hover {
   background: var(--gold);
   color: #000;
 }
+
 
 /* MAIN WRAP */
 .hw-container {
@@ -179,6 +198,7 @@ body.dark {
   display: none;
   border-radius: 6px;
 }
+
 
 
 
