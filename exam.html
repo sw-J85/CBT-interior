@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>CBT 문제풀이</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script src="./js/firebase-config.js"></script>
+<script src="./js/exam.js"></script>
+</head>
+<body>
+
+<div id="question">문제 로딩중…</div>
+
+<input id="answer" placeholder="답 입력" />
+<button onclick="submitAnswer()">제출</button>
+
+<div id="hint"></div>
+<button onclick="showHint()">힌트 보기</button>
+
+<div>
+  <button onclick="nextQuestion()">다음 문제</button>
+</div>
+
+</body>
+</html>
