@@ -113,6 +113,8 @@ body.dark {
   color: #d4d8df;                 /* 살짝 다운된 밝기 */
   margin-bottom: 14px;
   font-size: 18px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* placeholder 색도 눈에 부담 없도록 다운 */
@@ -200,6 +202,7 @@ body.dark {
   display: none;
   border-radius: 6px;
 }
+
 
 
 
