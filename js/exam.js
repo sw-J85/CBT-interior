@@ -80,32 +80,27 @@ function showQuestion() {
 // ======================
 //  정답 제출
 // ======================
-async function submitAnswer() {
-  const user = auth.currentUser;
-  const q = questions[index];
-  const input = document.getElementById("answer").value.trim();
+function submitAnswer() {
+  const userInput = document.getElementById("answer").value.trim();
 
-  const isCorrect = (input === q.answer);
+  const resultBox = document.getElementById("result");
 
-  if (isCorrect) {
-    correctCount++;
+  if (userInput === current.answer) {
+      resultBox.style.display = "block";
+      resultBox.style.color = "#CFAF3D";
+      resultBox.style.borderLeft = "4px solid #CFAF3D";
+      resultBox.innerHTML = "정답입니다!";
   } else {
-    wrongCount++;
+      resultBox.style.display = "block";
+      resultBox.style.color = "#FF5A5A";
+      resultBox.style.borderLeft = "4px solid #FF5A5A";
+      resultBox.innerHTML = `오답입니다. 정답: ${current.answer}`;
   }
 
-  alert(isCorrect ? "정답입니다!" : `오답입니다.\n정답: ${q.answer}`);
-
-  // Firestore에 기록 저장
-  await db.collection("users").doc(user.uid).set({
-    correctCount,
-    wrongCount,
-    totalTime
-  }, { merge: true });
-
-  updateStatsUI();
-// nextQuestion();   // 자동 넘김 제거
-
+  // 자동 이동 ❌
+  // nextQuestion();
 }
+
 
 
 
@@ -212,4 +207,5 @@ function logout() {
     location.href = "index.html";
   });
 }
+
 
