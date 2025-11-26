@@ -81,25 +81,33 @@ function showQuestion() {
 //  정답 제출
 // ======================
 function submitAnswer() {
+  const q = questions[index];   // ← 현재 문제 직접 가져오기
   const userInput = document.getElementById("answer").value.trim();
-
   const resultBox = document.getElementById("result");
 
-  if (userInput === current.answer) {
+  if (!q) {
+    resultBox.style.display = "block";
+    resultBox.innerHTML = "문제가 로드되지 않았습니다.";
+    return;
+  }
+
+  if (userInput === q.answer) {
       resultBox.style.display = "block";
       resultBox.style.color = "#CFAF3D";
       resultBox.style.borderLeft = "4px solid #CFAF3D";
       resultBox.innerHTML = "정답입니다!";
+      correctCount++;
   } else {
       resultBox.style.display = "block";
       resultBox.style.color = "#FF5A5A";
       resultBox.style.borderLeft = "4px solid #FF5A5A";
-      resultBox.innerHTML = `오답입니다. 정답: ${current.answer}`;
+      resultBox.innerHTML = `오답입니다. 정답: ${q.answer}`;
+      wrongCount++;
   }
 
-  // 자동 이동 ❌
-  // nextQuestion();
+  updateStatsUI();  // 정답/오답 즉시 반영
 }
+
 
 
 
@@ -207,5 +215,6 @@ function logout() {
     location.href = "index.html";
   });
 }
+
 
 
