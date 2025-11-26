@@ -53,7 +53,28 @@ function submitAnswer() {
   const correct = String(questions[current].answer).trim();
   const resultBox = document.getElementById("result");
 
-  if (input === correct) {
+  // 입력값이 없으면 무조건 오답 처리
+  if (!input) {
+    resultBox.innerHTML = `
+      <span style="color:#F44336; font-weight:bold;">✖ 오답입니다!</span>
+      <br><span style="color:#bbb;">정답: ${correct}</span>
+    `;
+    wrongCount++;
+    updateStats();
+    return;
+  }
+
+  // 공백 / 괄호 / 대소문자 제거
+  const u = input.replace(/[\s\(\)]/g, "").toLowerCase();
+  const c = correct.replace(/[\s\(\)]/g, "").toLowerCase();
+
+  // CBT 서술형 정답 비교 규칙
+  const isCorrect =
+    u === c ||            // 1) 정답과 완전 동일
+    c.includes(u) ||      // 2) 입력값이 정답 일부에 포함됨
+    u.includes(c);        // 3) 입력값이 정답보다 더 길지만 근본적으로 동일한 경우
+
+  if (isCorrect) {
     correctCount++;
     resultBox.innerHTML = `<span style="color:#4CAF50; font-weight:bold;">✔ 정답입니다!</span>`;
   } else {
@@ -66,6 +87,7 @@ function submitAnswer() {
 
   updateStats();
 }
+
 
 
 // =============================
@@ -175,5 +197,6 @@ function logout() {
 window.onload = () => {
   loadProblems();
 };
+
 
 
