@@ -4,7 +4,7 @@ let startTime = 0;
 
 // CSV 로드 (id,question,answer,book,page,creator)
 async function loadCSV() {
-  const response = await fetch("./data/questions.txt");
+  const response = await fetch("https://raw.githubusercontent.com/sw-J85/CBT-interior/main/data/questions.txt");
   const text = await response.text();
   const rows = text.split("\n").map(r => r.split(","));
 
@@ -85,3 +85,4 @@ function showHint() {
     📘 <b>힌트:</b> ${q.book} / p.${q.page}
   `;
 }
+
