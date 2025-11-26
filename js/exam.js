@@ -2,6 +2,9 @@ let questions = [];
 let index = 0;
 let startTime = 0;
 
+console.log("loadCSV start");
+
+
 // CSV 로드 (id,question,answer,book,page,creator)
 async function loadCSV() {
   const response = await fetch("./data/questions.txt");
@@ -91,5 +94,6 @@ function showHint() {
     📘 <b>힌트:</b> ${q.book} / p.${q.page}
   `;
 }
+
 
 
