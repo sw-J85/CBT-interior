@@ -1,87 +1,75 @@
-// ==========================
-// 관리자 설정
-// ==========================
-const adminEmail = "rupit85@gmail.com";  // ⭐ 여기를 마스터님 이메일로 변경
-const db = firebase.firestore();
+// ==============================
+// 관리자 인증 & Firestore 연결
+// ==============================
 
+// 로그인 여부 감시
+firebase.auth().onAuthStateChanged(async (user) => {
+  const adminCheck = document.getElementById("admin-check");
+  const uploadArea = document.getElementById("upload-area");
 
-// ==========================
-// 페이지 로드시 관리자 체크
-// ==========================
-auth.onAuthStateChanged(user => {
   if (!user) {
-    location.href = "index.html";
+    adminCheck.innerText = "⚠ 로그인 필요 (관리자만 접근 가능)";
+    uploadArea.style.display = "none";
     return;
   }
 
-  if (user.email !== adminEmail) {
-    alert("관리자만 접근할 수 있습니다.");
-    location.href = "main.html";
-    return;
-  }
+  // Firestore의 admins 문서에 uid가 있어야 관리자
+  const adminDoc = await firebase.firestore()
+    .collection("admins")
+    .doc(user.uid)
+    .get();
 
-  document.getElementById("admin-check").innerText = 
-    `관리자 인증 완료: ${user.email}`;
-  document.getElementById("upload-area").style.display = "block";
+  if (adminDoc.exists) {
+    adminCheck.innerText = `✔ 관리자 인증 완료: ${user.email}`;
+    uploadArea.style.display = "block";
+  } else {
+    adminCheck.innerText = "❌ 관리자 권한 없음";
+    uploadArea.style.display = "none";
+  }
 });
 
+// ==============================
+//  엑셀 업로드 기능
+// ==============================
 
-// ==========================
-// 엑셀 파일 파싱 (xlsx → JSON)
-// ==========================
-function uploadExcel() {
+async function uploadExcel() {
   const fileInput = document.getElementById("excelFile");
+  const preview = document.getElementById("preview");
+
   if (!fileInput.files.length) {
     alert("엑셀 파일을 선택해주세요.");
     return;
   }
 
   const file = fileInput.files[0];
+  preview.innerText = "엑셀 파일 읽는 중... 잠시만 기다려주세요.";
+
   const reader = new FileReader();
 
   reader.onload = async (e) => {
-    const data = new Uint8Array(e.target.result);
+    try {
+      // xlsx 파싱
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
-    // xlsx 파서 사용 (Browser)
-    const workbook = XLSX.read(data, { type: "array" });
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
+      const json = XLSX.utils.sheet_to_json(sheet);
 
-    // JSON 변환
-    const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+      preview.innerText =
+        `총 ${json.length}개의 문제가 감지됨\n` +
+        JSON.stringify(json, null, 2);
 
-    // Firestore 저장
-    await uploadToFirestore(rows);
+      // Firestore 업로드
+      for (let item of json) {
+        await firebase.firestore().collection("problems").add(item);
+      }
 
-    document.getElementById("preview").innerText = 
-      JSON.stringify(rows, null, 2);
+      alert("🔥 Firestore 업로드 완료!");
+    } catch (err) {
+      console.error(err);
+      preview.innerText = "엑셀 읽기 실패: " + err.message;
+    }
   };
 
   reader.readAsArrayBuffer(file);
-}
-
-
-// ==========================
-// Firestore에 문제 저장
-// ==========================
-async function uploadToFirestore(rows) {
-  for (const row of rows) {
-    const id = row["id"];
-
-    if (!id) continue;
-
-    // Firestore 문서 구조
-    const problemData = {
-      id: id,
-      question: row["question"] || "",
-      answer: row["answer"] || "",
-      book: row["book"] || "",
-      page: String(row["page"] || ""),
-      creator: row["creator"] || ""
-    };
-
-    await db.collection("problems").doc(id).set(problemData);
-  }
-
-  alert("문제가 Firestore에 업로드 완료되었습니다.");
 }
