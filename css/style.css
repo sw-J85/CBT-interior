@@ -23,45 +23,41 @@ body.dark {
 /* HEADER */
 /* HEADER */
 .hw-header {
-  position: relative;
-  width: 100%;
-  padding: 18px 60px 18px 20px; /* top right bottom left */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
   background: var(--navy);
   color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
+  position: relative;
 }
 
-/* 좌측 HIVEWORKS */
+/* 좌측 */
 .hw-left {
-  position: absolute;
-  left: 20px;
   font-size: 18px;
   font-weight: 600;
 }
 
 /* 중앙 타이틀 */
 .hw-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 20px;
   font-weight: 700;
-  text-align: center;
+  cursor: pointer;
 }
 
 /* 우측 LOGOUT */
 .hw-btn-logout {
-  width: auto !important;
-  position: absolute !important;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  border: 2px solid var(--gold);
   background: transparent;
+  border: 2px solid var(--gold);
   color: var(--gold);
   padding: 6px 12px;
+  border-radius: 8px;
   cursor: pointer;
 }
+
 
 
 .hw-btn-logout:hover {
@@ -202,6 +198,7 @@ body.dark {
   display: none;
   border-radius: 6px;
 }
+
 
 
 
