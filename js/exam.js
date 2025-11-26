@@ -162,6 +162,14 @@ function updateStatsUI() {
   `;
 }
 
+// ======================
+//  ⏱ 누적 시간 증가 타이머 (여기 추가!) 
+// ======================
+setInterval(() => {
+  totalTime++;         // 1초 증가
+  updateStatsUI();     // UI 갱신
+}, 1000);
+
 
 
 // ======================
@@ -217,6 +225,7 @@ function logout() {
     location.href = "index.html";
   });
 }
+
 
 
 
