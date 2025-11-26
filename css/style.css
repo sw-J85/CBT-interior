@@ -199,6 +199,14 @@ body.dark {
   border-radius: 6px;
 }
 
+.creator-tag {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #9AA3AF;  /* 눈에 편안한 소프트 그레이 */
+}
+
+
+
 
 
 
