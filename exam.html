@@ -2,32 +2,51 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>CBT 문제풀이</title>
+<title>Hiveworks CBT</title>
+
+<link rel="stylesheet" href="./style.css">
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 <script src="./js/firebase-config.js"></script>
-<script src="./js/exam.js"></script>
+<script src="./js/exam.js" defer></script>
 </head>
-<body>
 
-<div id="question">문제 로딩중…</div>
+<body class="dark">
 
-<input id="answer" placeholder="답 입력" />
-<button onclick="submitAnswer()">제출</button>
+<!-- HEADER -->
+<header class="hw-header">
+  <div class="hw-title">HIVEWORKS CBT</div>
+  <button class="hw-btn-logout" onclick="logout()">LOGOUT</button>
+</header>
 
-<div id="hint"></div>
-<button onclick="showHint()">힌트 보기</button>
+<!-- MAIN WRAP -->
+<div class="hw-container">
 
-<div>
-  <button onclick="nextQuestion()">다음 문제</button>
+  <!-- STATS -->
+  <div id="stats" class="hw-stats"></div>
+
+  <!-- QUESTION CARD -->
+  <div class="hw-card">
+    <div id="question" class="hw-question">문제 로딩중…</div>
+
+    <input id="answer" class="hw-input" placeholder="정답 입력">
+
+    <button class="hw-btn-submit" onclick="submitAnswer()">제출</button>
+
+    <button class="hw-btn-next" onclick="nextQuestion()">다음 문제</button>
+
+    <button class="hw-btn-hint" onclick="showHint()">힌트 보기</button>
+
+    <div id="hint" class="hw-hint"></div>
+  </div>
+
+  <!-- RESET -->
+  <button class="hw-btn-reset" onclick="resetStats()">기록 초기화</button>
+
 </div>
 
-<div id="stats" style="margin-top: 15px;"></div>
-
-  
 </body>
 </html>
-
