@@ -130,8 +130,7 @@ body.dark {
 .hw-btn-submit,
 .hw-btn-next,
 .hw-btn-hint,
-.hw-btn-reset,
-.hw-btn-logout {
+.hw-btn-reset{
   width: 100%;
   padding: 10px;
   border: none;
@@ -198,6 +197,7 @@ body.dark {
   display: none;
   border-radius: 6px;
 }
+
 
 
 
