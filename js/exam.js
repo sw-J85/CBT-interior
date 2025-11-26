@@ -41,7 +41,7 @@ function showQuestion() {
 
   document.getElementById("question").innerText = q.question;
   document.getElementById("answer").value = "";
-  document.getElementById("result").innerText = "";
+
   document.getElementById("hint").innerText = "";
 }
 
@@ -72,6 +72,7 @@ function submitAnswer() {
 // 다음 문제
 // =============================
 function nextQuestion() {
+  document.getElementById("result").innerHTML = ""; // 여기에만 초기화
   current++;
 
   if (current >= questions.length) {
@@ -81,6 +82,7 @@ function nextQuestion() {
 
   showQuestion();
 }
+
 
 // =============================
 // 힌트(book + page)
@@ -173,4 +175,5 @@ function logout() {
 window.onload = () => {
   loadProblems();
 };
+
 
