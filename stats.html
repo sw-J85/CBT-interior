@@ -1,22 +1,110 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>나의 기록</title>
+  <meta charset="UTF-8">
+  <title>나의 기록 - HIVEWORKS CBT</title>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <link rel="stylesheet" href="./css/style.css">
 
-<script src="./js/firebase-config.js"></script>
-<script src="./js/stats.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script src="./js/firebase-config.js"></script>
 </head>
 
-<body>
-  <h2>나의 기록</h2>
+<body class="dark">
 
-  <div id="stats">로딩중…</div>
+<!-- HEADER -->
+<header class="hw-header">
+  <div class="hw-title">HIVEWORKS CBT</div>
+  <button class="hw-btn-logout" onclick="logout()">LOGOUT</button>
+</header>
 
-  <button onclick="location.href='main.html'">메인으로</button>
+<!-- MAIN -->
+<div class="hw-container">
+
+  <div class="hw-card">
+      <h2 style="margin-bottom:20px; text-align:center;">나의 기록</h2>
+
+      <div id="statsBox" class="hw-stats" style="margin-bottom:20px;">
+        기록 불러오는 중…
+      </div>
+
+      <button class="hw-btn-next" onclick="goMain()">메인으로 돌아가기</button>
+
+      <button class="hw-btn-reset" onclick="resetStats()">기록 초기화</button>
+  </div>
+
+</div>
+
+<script>
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+
+  // 로그인된 유저의 기록 불러오기
+  auth.onAuthStateChanged(async user => {
+    if (!user) {
+      window.location.href = "index.html";
+      return;
+    }
+
+    const uid = user.uid;
+    const statRef = db.collection("stats").doc(uid);
+    const statSnap = await statRef.get();
+
+    if (!statSnap.exists) {
+      document.getElementById("statsBox").innerHTML = `
+        아직 기록이 없습니다.<br><br>
+        문제풀이를 시작해보세요!
+      `;
+      return;
+    }
+
+    const data = statSnap.data();
+
+    document.getElementById("statsBox").innerHTML = `
+      <strong>총 학습 시간:</strong> ${data.totalTime || 0} 초<br>
+      <strong>풀어본 문제 수:</strong> ${data.solved || 0} 개<br>
+      <strong>맞춘 문제:</strong> ${data.correct || 0} 개<br>
+      <strong>틀린 문제:</strong> ${data.incorrect || 0} 개<br>
+      <strong>정답률:</strong> ${data.accuracy || 0}%<br>
+      <strong>능률(문제/시간):</strong> ${data.efficiency || 0}%  
+    `;
+  });
+
+
+  // 기록 초기화
+  async function resetStats() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    await db.collection("stats").doc(user.uid).set({
+      totalTime: 0,
+      solved: 0,
+      correct: 0,
+      incorrect: 0,
+      accuracy: 0,
+      efficiency: 0
+    });
+
+    document.getElementById("statsBox").innerHTML = `
+      기록이 초기화되었습니다.
+    `;
+  }
+
+  // 메인으로 이동
+  function goMain() {
+    window.location.href = "main.html";
+  }
+
+  // 로그아웃
+  function logout() {
+    auth.signOut().then(() => {
+      window.location.href = "index.html";
+    });
+  }
+</script>
+
 </body>
 </html>
