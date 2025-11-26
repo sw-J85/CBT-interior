@@ -51,17 +51,22 @@ function showQuestion() {
 function submitAnswer() {
   const input = document.getElementById("answer").value.trim();
   const correct = String(questions[current].answer).trim();
+  const resultBox = document.getElementById("result");
 
   if (input === correct) {
     correctCount++;
-    document.getElementById("result").innerText = "✔ 정답!";
+    resultBox.innerHTML = `<span style="color:#4CAF50; font-weight:bold;">✔ 정답입니다!</span>`;
   } else {
     wrongCount++;
-    document.getElementById("result").innerText = `✖ 오답! (정답: ${correct})`;
+    resultBox.innerHTML = `
+      <span style="color:#F44336; font-weight:bold;">✖ 오답입니다!</span>
+      <br><span style="color:#bbb;">정답: ${correct}</span>
+    `;
   }
 
   updateStats();
 }
+
 
 // =============================
 // 다음 문제
@@ -168,3 +173,4 @@ function logout() {
 window.onload = () => {
   loadProblems();
 };
+
