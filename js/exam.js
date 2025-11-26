@@ -35,31 +35,17 @@ function parseCSVLine(line) {
 }
 
 
-// ======================
-//  CSV/TXT 파일 로드
-// ======================
-async function loadCSV() {
-  const response = await fetch("./data/questions.csv");
-  const text = await response.text();
+//엑셀 업로드//
 
-  const lines = text
-    .trim()
-    .replace(/^\uFEFF/, "") // BOM 제거
-    .split("\n")
-    .filter(line => line.trim() !== "");
-
-  const rows = lines.map(line => parseCSVLine(line));
-
-  // 🎯 creator가 항상 row[5]에 오도록 보장
-  return rows.slice(1).map(row => ({
-    id: row[0] || "",
-    question: row[1] || "",
-    answer: row[2] || "",
-    book: row[3] || "",
-    page: row[4] || "",
-    creator: row[5] || ""
-  }));
+async function loadProblems() {
+  const snap = await db.collection("problems").get();
+  return snap.docs.map(doc => doc.data());
 }
+
+questions = await loadProblems();
+shuffle(questions);
+showQuestion();
+
 
 
 // ======================
@@ -254,5 +240,6 @@ function logout() {
     location.href = "index.html";
   });
 }
+
 
 
