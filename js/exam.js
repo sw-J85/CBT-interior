@@ -10,6 +10,32 @@ console.log("loadCSV start");
 
 
 // ======================
+//  CSV 안전 파서
+//  (따옴표 안 콤마 처리)
+// ======================
+function parseCSVLine(line) {
+  const result = [];
+  let insideQuotes = false;
+  let value = "";
+
+  for (let char of line) {
+    if (char === '"') {
+      insideQuotes = !insideQuotes;
+      continue;
+    }
+    if (char === "," && !insideQuotes) {
+      result.push(value.trim());
+      value = "";
+      continue;
+    }
+    value += char;
+  }
+  result.push(value.trim());
+  return result;
+}
+
+
+// ======================
 //  CSV/TXT 파일 로드
 // ======================
 async function loadCSV() {
@@ -22,18 +48,18 @@ async function loadCSV() {
     .split("\n")
     .filter(line => line.trim() !== "");
 
-  const rows = lines.map(line => line.split(","));
+  const rows = lines.map(line => parseCSVLine(line));
 
+  // 🎯 creator가 항상 row[5]에 오도록 보장
   return rows.slice(1).map(row => ({
-    id: row[0]?.trim(),
-    question: row[1]?.trim(),
-    answer: row[2]?.trim(),
-    book: row[3]?.trim(),
-    page: row[4]?.trim(),
-    creator: row[5]?.trim()
+    id: row[0] || "",
+    question: row[1] || "",
+    answer: row[2] || "",
+    book: row[3] || "",
+    page: row[4] || "",
+    creator: row[5] || ""
   }));
 }
-
 
 
 // ======================
@@ -83,7 +109,7 @@ function showQuestion() {
 //  정답 제출
 // ======================
 function submitAnswer() {
-  const q = questions[index];   // ← 현재 문제 직접 가져오기
+  const q = questions[index];
   const userInput = document.getElementById("answer").value.trim();
   const resultBox = document.getElementById("result");
 
@@ -107,10 +133,8 @@ function submitAnswer() {
       wrongCount++;
   }
 
-  updateStatsUI();  // 정답/오답 즉시 반영
+  updateStatsUI();
 }
-
-
 
 
 
@@ -151,7 +175,6 @@ function updateStatsUI() {
     ? 0
     : Math.floor((correctCount / (correctCount + wrongCount)) * 100);
 
-  // 🔥 totalTime(초 단위)을 hh:mm:ss로 변환
   const hours = String(Math.floor(totalTime / 3600)).padStart(2, "0");
   const mins = String(Math.floor((totalTime % 3600) / 60)).padStart(2, "0");
   const secs = String(totalTime % 60).padStart(2, "0");
@@ -164,12 +187,13 @@ function updateStatsUI() {
   `;
 }
 
+
 // ======================
-//  ⏱ 누적 시간 증가 타이머 (여기 추가!) 
+//  ⏱ 누적 시간 증가 타이머
 // ======================
 setInterval(() => {
-  totalTime++;         // 1초 증가
-  updateStatsUI();     // UI 갱신
+  totalTime++;
+  updateStatsUI();
 }, 1000);
 
 
@@ -227,9 +251,3 @@ function logout() {
     location.href = "index.html";
   });
 }
-
-
-
-
-
-
