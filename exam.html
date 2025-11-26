@@ -17,10 +17,11 @@
 <body class="dark">
 
 <!-- HEADER -->
-<header class="hw-header">
+<header class="hw-header" onclick="location.href='main.html'" style="cursor:pointer;">
   <div class="hw-title">HIVEWORKS CBT</div>
-  <button class="hw-btn-logout" onclick="logout()">LOGOUT</button>
+  <button class="hw-btn-logout" onclick="event.stopPropagation(); logout();">LOGOUT</button>
 </header>
+
 
 <!-- MAIN WRAP -->
 <div class="hw-container">
@@ -50,4 +51,5 @@
 
 </body>
 </html>
+
 
