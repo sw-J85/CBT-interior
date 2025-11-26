@@ -80,6 +80,9 @@ auth.onAuthStateChanged(async user => {
 
   questions = await loadCSV();
 
+  // 🔥 전체 랜덤 모드 적용
+  shuffle(questions);
+
   startTime = Date.now();    // 세션 시작
   showQuestion();
   updateStatsUI();
@@ -251,4 +254,5 @@ function logout() {
     location.href = "index.html";
   });
 }
+
 
