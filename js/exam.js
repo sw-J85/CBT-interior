@@ -103,7 +103,8 @@ async function submitAnswer() {
   }, { merge: true });
 
   updateStatsUI();
-  nextQuestion();
+// nextQuestion();   // 자동 넘김 제거
+
 }
 
 
@@ -211,3 +212,4 @@ function logout() {
     location.href = "index.html";
   });
 }
+
