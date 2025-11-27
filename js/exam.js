@@ -45,6 +45,9 @@ function showQuestion() {
 
   document.getElementById("answer").value = "";
   document.getElementById("hint").innerText = "";
+
+    // 🔥 댓글 불러오기 추가
+  loadComments(q.id);
 }
 
 
@@ -218,6 +221,60 @@ function logout() {
 window.onload = () => {
   loadProblems();
 };
+
+
+
+
+//Firestore 댓글 추가 함수
+
+async function addComment() {
+  const commentText = document.getElementById("comment-input").value.trim();
+  if (!commentText) return;
+
+  const problemId = questions[current].id; 
+
+  await db
+    .collection("problems")
+    .doc(problemId)
+    .collection("comments")
+    .add({
+      text: commentText,
+      writer: "마스터",
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+  document.getElementById("comment-input").value = "";
+  loadComments(problemId);
+}
+
+
+
+
+//Firestore 댓글 로딩 함수
+
+async function loadComments(problemId) {
+  const listBox = document.getElementById("comment-list");
+  listBox.innerHTML = "로딩중...";
+
+  const snap = await db
+    .collection("problems")
+    .doc(problemId)
+    .collection("comments")
+    .orderBy("createdAt", "asc")
+    .get();
+
+  listBox.innerHTML = "";
+
+  snap.forEach(doc => {
+    const c = doc.data();
+    listBox.innerHTML += `
+      <div class="hw-comment">
+        <div>${c.text}</div>
+        <div style="color:#777; font-size:13px;">작성자: ${c.writer}</div>
+      </div>
+    `;
+  });
+}
 
 
 
