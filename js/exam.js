@@ -56,6 +56,10 @@ function submitAnswer() {
   const correct = String(questions[current].answer).trim();
   const resultBox = document.getElementById("result");
 
+  // ---- 힌트 자동 표시 추가 ----
+  showHint(); 
+  // -----------------------------
+
   // 입력값이 없으면 무조건 오답 처리
   if (!input) {
     resultBox.innerHTML = `
@@ -214,6 +218,7 @@ function logout() {
 window.onload = () => {
   loadProblems();
 };
+
 
 
 
