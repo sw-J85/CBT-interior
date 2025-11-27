@@ -92,6 +92,20 @@ function submitAnswer() {
 }
 
 
+// =============================
+// Enter 키로 정답 제출
+// =============================
+document.getElementById("answer").addEventListener("keydown", function (event) {
+
+  // Shift + Enter는 줄바꿈 허용 (원하면)
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();  // 기본 제출 막기
+    submitAnswer();          // 정답 제출
+  }
+});
+
+
+
 
 // =============================
 // 다음 문제
@@ -200,6 +214,7 @@ function logout() {
 window.onload = () => {
   loadProblems();
 };
+
 
 
 
