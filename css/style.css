@@ -200,10 +200,12 @@ body.dark {
 }
 
 .hw-creator {
-  margin-top: 8px;
+  margin-top: 6px;
+  margin-bottom: 14px;
   font-size: 13px;
   color: #6f7b8c;  /* 눈에 편안한 소프트 그레이 */
 }
+
 
 
 
