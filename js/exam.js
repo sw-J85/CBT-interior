@@ -40,10 +40,13 @@ function showQuestion() {
   const q = questions[current];
 
   document.getElementById("question").innerText = q.question;
-  document.getElementById("answer").value = "";
+  document.getElementById("creator").innerText = 
+      q.creator ? `출제자: ${q.creator}` : "";
 
+  document.getElementById("answer").value = "";
   document.getElementById("hint").innerText = "";
 }
+
 
 // =============================
 // 정답 제출
@@ -197,6 +200,7 @@ function logout() {
 window.onload = () => {
   loadProblems();
 };
+
 
 
 
