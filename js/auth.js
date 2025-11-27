@@ -51,9 +51,14 @@ auth.getRedirectResult()
 // ============================
 // 이미 로그인된 사용자라면 main.html로 이동 처리
 // ============================
-auth.onAuthStateChanged((user) => {
-  if (user) {
-    // 이미 로그인된 상태라면 바로 진입
-    window.location.href = "main.html";
+auth.onAuthStateChanged(user => {
+  // Firebase에서 인증 정보 가져오는 중일 때는 아무것도 하지 않음
+  if (user === null) {
+    window.location.href = "index.html";
+    return;
   }
+
+  // user가 객체면 정상 로그인 상태 → main.html 유지
 });
+
+
