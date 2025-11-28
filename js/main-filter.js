@@ -10,13 +10,9 @@ async function loadFilterOptions() {
     if (data.creator) creators.add(data.creator);
   });
 
-  // DOM 출력 영역
   const subjectDiv = document.getElementById("subject-list");
   const creatorDiv = document.getElementById("creator-list");
 
-  // ======================
-  // 과목(book) 목록 출력
-  // ======================
   books.forEach(book => {
     subjectDiv.innerHTML += `
       <label>
@@ -26,16 +22,12 @@ async function loadFilterOptions() {
     `;
   });
 
-  // 전체 선택 옵션 추가
   subjectDiv.innerHTML += `
     <label>
       <input type="checkbox" class="subject" value="all"> 전체
     </label>
   `;
 
-  // ======================
-  // 출제자 목록 출력
-  // ======================
   creators.forEach(c => {
     creatorDiv.innerHTML += `
       <label>
@@ -55,9 +47,6 @@ async function loadFilterOptions() {
 loadFilterOptions();
 
 
-// =========================
-// 시험 시작 시 선택값 저장
-// =========================
 function startCustomExam() {
   const subjects = [...document.querySelectorAll(".subject:checked")].map(s => s.value);
   const creators = [...document.querySelectorAll(".creator:checked")].map(c => c.value);
