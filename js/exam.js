@@ -13,28 +13,30 @@ let mockInterval;
 
 
 // =============================
-// 문제 불러오기 (메인 선택값 기반)
+// 문제 불러오기 (필터 안정화 버전)
 // =============================
 async function loadProblems() {
 
-  // 메인 화면에서 선택한 항목
-  const subjects = JSON.parse(localStorage.getItem("selectedSubjects"));
-  const creators = JSON.parse(localStorage.getItem("selectedCreators"));
-  const mode = localStorage.getItem("mode");   // normal / mock
+  let subjects = JSON.parse(localStorage.getItem("selectedSubjects") || "[]");
+  let creators = JSON.parse(localStorage.getItem("selectedCreators") || "[]");
+  const mode = localStorage.getItem("mode") || "normal";
 
-  let ref = db.collection("problems");
-  let query = ref;
+  // 🔥 1) 필터 값이 없으면 자동으로 전체 처리
+  if (!Array.isArray(subjects) || subjects.length === 0) {
+    subjects = ["all"];
+  }
+  if (!Array.isArray(creators) || creators.length === 0) {
+    creators = ["all"];
+  }
 
-  // ---------------------------
-  // 과목(book) 필터
-  // ---------------------------
+  let query = db.collection("problems");
+
+  // 🔥 2) 과목 필터
   if (!subjects.includes("all")) {
     query = query.where("book", "in", subjects);
   }
 
-  // ---------------------------
-  // 출제자 필터
-  // ---------------------------
+  // 🔥 3) 출제자 필터
   if (!creators.includes("all")) {
     query = query.where("creator", "in", creators);
   }
@@ -42,12 +44,10 @@ async function loadProblems() {
   const snap = await query.get();
   questions = snap.docs.map(doc => doc.data());
 
-  // ---------------------------
-  // 모의고사 모드 처리
-  // ---------------------------
+  // 🔥 4) 모의고사 처리 (40문제 제한)
   if (mode === "mock") {
     shuffle(questions);
-    questions = questions.slice(0, 40);  // 40문제 제한
+    questions = questions.slice(0, 40);
     totalTime = 0;
     startMockTimer();
   } else {
@@ -100,15 +100,14 @@ function submitAnswer() {
   const correct = String(questions[current].answer).trim();
   const resultBox = document.getElementById("result");
 
-  // 정답 제출 시 자동으로 힌트 열기
-  showHint();
+  showHint(); // 힌트 자동 표시
 
   if (!input) {
+    wrongCount++;
     resultBox.innerHTML = `
       <span style="color:#F44336;font-weight:bold;">✖ 오답입니다!</span>
       <br><span style="color:#bbb;">정답: ${correct}</span>
     `;
-    wrongCount++;
     updateStats();
     return;
   }
@@ -159,7 +158,6 @@ function nextQuestion() {
     finishExam();
     return;
   }
-
   showQuestion();
 }
 
@@ -175,7 +173,7 @@ function showHint() {
 
 
 // =============================
-// 정답률 / 시간 업데이트
+// 정답률 / 시간
 // =============================
 function updateStats() {
   const total = correctCount + wrongCount;
@@ -191,7 +189,7 @@ function updateStats() {
 
 
 // =============================
-// 일반모드 타이머
+// 일반 모드 타이머
 // =============================
 function startTimer() {
   timer = setInterval(() => {
@@ -202,7 +200,7 @@ function startTimer() {
 
 
 // =============================
-// 모의고사 타이머 (1시간)
+// 모의고사 타이머
 // =============================
 function startMockTimer() {
   mockInterval = setInterval(() => {
@@ -212,7 +210,7 @@ function startMockTimer() {
     const s = mockTime % 60;
 
     document.getElementById("stats").innerText =
-      `모의고사 | 남은시간: ${m}분 ${String(s).padStart(2, '0')}초`;
+      `모의고사 | 남은시간: ${m}분 ${String(s).padStart(2, "0")}초`;
 
     if (mockTime <= 0) {
       clearInterval(mockInterval);
@@ -290,7 +288,6 @@ window.onload = () => {
 };
 
 
-
 // =============================
 // Firestore 댓글 추가
 // =============================
@@ -336,7 +333,7 @@ async function loadComments(problemId) {
     listBox.innerHTML += `
       <div class="hw-comment">
         <div>${c.text}</div>
-        <div style="color:#777; font-size:13px;">작성자: ${c.writer}</div>
+        <div style="color:#777;font-size:13px;">작성자: ${c.writer}</div>
       </div>
     `;
   });
