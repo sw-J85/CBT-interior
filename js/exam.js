@@ -167,9 +167,10 @@ function nextQuestion() {
 // =============================
 function showHint() {
   const q = questions[current];
-  const hintText = `📘 교재: ${q.book} | 📄 페이지: ${q.page}`;
+  const hintText = `📘 교재: ${q.book}\n💡 해설: ${q.page}`;
   document.getElementById("hint").innerText = hintText;
 }
+
 
 
 // =============================
@@ -338,3 +339,4 @@ async function loadComments(problemId) {
     `;
   });
 }
+
