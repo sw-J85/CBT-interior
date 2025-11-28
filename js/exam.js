@@ -8,20 +8,59 @@ let wrongCount = 0;
 let totalTime = 0;
 let timer = null;
 
+let mockTime = 3600;
+let mockInterval;
+
+
 // =============================
-// 문제 불러오기 (async 필수)
+// 문제 불러오기 (메인 선택값 기반)
 // =============================
 async function loadProblems() {
-  const snap = await db.collection("problems").get();
+
+  // 메인 화면에서 선택한 항목
+  const subjects = JSON.parse(localStorage.getItem("selectedSubjects"));
+  const creators = JSON.parse(localStorage.getItem("selectedCreators"));
+  const mode = localStorage.getItem("mode");   // normal / mock
+
+  let ref = db.collection("problems");
+  let query = ref;
+
+  // ---------------------------
+  // 과목(book) 필터
+  // ---------------------------
+  if (!subjects.includes("all")) {
+    query = query.where("book", "in", subjects);
+  }
+
+  // ---------------------------
+  // 출제자 필터
+  // ---------------------------
+  if (!creators.includes("all")) {
+    query = query.where("creator", "in", creators);
+  }
+
+  const snap = await query.get();
   questions = snap.docs.map(doc => doc.data());
+
+  // ---------------------------
+  // 모의고사 모드 처리
+  // ---------------------------
+  if (mode === "mock") {
+    shuffle(questions);
+    questions = questions.slice(0, 40);  // 40문제 제한
+    totalTime = 0;
+    startMockTimer();
+  } else {
+    startTimer();
+  }
 
   shuffle(questions);
   current = 0;
 
-  startTimer();
   showQuestion();
   updateStats();
 }
+
 
 // =============================
 // 배열 섞기
@@ -33,6 +72,7 @@ function shuffle(arr) {
   }
 }
 
+
 // =============================
 // 문제 표시
 // =============================
@@ -40,13 +80,14 @@ function showQuestion() {
   const q = questions[current];
 
   document.getElementById("question").innerText = q.question;
-  document.getElementById("creator").innerText = 
-      q.creator ? `출제자: ${q.creator}` : "";
+
+  document.getElementById("creator").innerText =
+    q.creator ? `출제자: ${q.creator}` : "";
 
   document.getElementById("answer").value = "";
   document.getElementById("hint").innerText = "";
+  document.getElementById("result").innerHTML = "";
 
-    // 🔥 댓글 불러오기 추가
   loadComments(q.id);
 }
 
@@ -59,14 +100,12 @@ function submitAnswer() {
   const correct = String(questions[current].answer).trim();
   const resultBox = document.getElementById("result");
 
-  // ---- 힌트 자동 표시 추가 ----
-  showHint(); 
-  // -----------------------------
+  // 정답 제출 시 자동으로 힌트 열기
+  showHint();
 
-  // 입력값이 없으면 무조건 오답 처리
   if (!input) {
     resultBox.innerHTML = `
-      <span style="color:#F44336; font-weight:bold;">✖ 오답입니다!</span>
+      <span style="color:#F44336;font-weight:bold;">✖ 오답입니다!</span>
       <br><span style="color:#bbb;">정답: ${correct}</span>
     `;
     wrongCount++;
@@ -74,23 +113,22 @@ function submitAnswer() {
     return;
   }
 
-  // 공백 / 괄호 / 대소문자 제거
+  // CBT-style 정답 비교
   const u = input.replace(/[\s\(\)]/g, "").toLowerCase();
   const c = correct.replace(/[\s\(\)]/g, "").toLowerCase();
 
-  // CBT 서술형 정답 비교 규칙
   const isCorrect =
-    u === c ||            // 1) 정답과 완전 동일
-    c.includes(u) ||      // 2) 입력값이 정답 일부에 포함됨
-    u.includes(c);        // 3) 입력값이 정답보다 더 길지만 근본적으로 동일한 경우
+    u === c ||
+    c.includes(u) ||
+    u.includes(c);
 
   if (isCorrect) {
     correctCount++;
-    resultBox.innerHTML = `<span style="color:#4CAF50; font-weight:bold;">✔ 정답입니다!</span>`;
+    resultBox.innerHTML = `<span style="color:#4CAF50;font-weight:bold;">✔ 정답입니다!</span>`;
   } else {
     wrongCount++;
     resultBox.innerHTML = `
-      <span style="color:#F44336; font-weight:bold;">✖ 오답입니다!</span>
+      <span style="color:#F44336;font-weight:bold;">✖ 오답입니다!</span>
       <br><span style="color:#bbb;">정답: ${correct}</span>
     `;
   }
@@ -103,22 +141,18 @@ function submitAnswer() {
 // Enter 키로 정답 제출
 // =============================
 document.getElementById("answer").addEventListener("keydown", function (event) {
-
-  // Shift + Enter는 줄바꿈 허용 (원하면)
   if (event.key === "Enter" && !event.shiftKey) {
-    event.preventDefault();  // 기본 제출 막기
-    submitAnswer();          // 정답 제출
+    event.preventDefault();
+    submitAnswer();
   }
 });
-
-
 
 
 // =============================
 // 다음 문제
 // =============================
 function nextQuestion() {
-  document.getElementById("result").innerHTML = ""; // 여기에만 초기화
+  document.getElementById("result").innerHTML = "";
   current++;
 
   if (current >= questions.length) {
@@ -139,6 +173,7 @@ function showHint() {
   document.getElementById("hint").innerText = hintText;
 }
 
+
 // =============================
 // 정답률 / 시간 업데이트
 // =============================
@@ -154,8 +189,9 @@ function updateStats() {
     `정답률: ${rate}% | ✔ ${correctCount} | ✖ ${wrongCount} | ⏱ ${hrs}h ${mins}m ${secs}s`;
 }
 
+
 // =============================
-// 타이머
+// 일반모드 타이머
 // =============================
 function startTimer() {
   timer = setInterval(() => {
@@ -163,6 +199,29 @@ function startTimer() {
     updateStats();
   }, 1000);
 }
+
+
+// =============================
+// 모의고사 타이머 (1시간)
+// =============================
+function startMockTimer() {
+  mockInterval = setInterval(() => {
+
+    mockTime--;
+    const m = Math.floor(mockTime / 60);
+    const s = mockTime % 60;
+
+    document.getElementById("stats").innerText =
+      `모의고사 | 남은시간: ${m}분 ${String(s).padStart(2, '0')}초`;
+
+    if (mockTime <= 0) {
+      clearInterval(mockInterval);
+      finishExam();
+    }
+
+  }, 1000);
+}
+
 
 // =============================
 // 기록 초기화
@@ -178,11 +237,13 @@ function resetStats() {
   showQuestion();
 }
 
+
 // =============================
-// 시험 종료 + 기록 저장
+// 시험 종료
 // =============================
 function finishExam() {
   clearInterval(timer);
+  clearInterval(mockInterval);
 
   document.getElementById("question").innerText =
     "🎉 모든 문제를 풀었습니다!";
@@ -190,12 +251,16 @@ function finishExam() {
   saveRecord();
 }
 
+
 // =============================
 // Firestore 기록 저장
 // =============================
 async function saveRecord() {
+  const mode = localStorage.getItem("mode");
+
   await db.collection("records").add({
     date: new Date(),
+    mode: mode,
     total: questions.length,
     correct: correctCount,
     wrong: wrongCount,
@@ -206,6 +271,7 @@ async function saveRecord() {
     "📌 기록이 저장되었습니다.";
 }
 
+
 // =============================
 // LOGOUT
 // =============================
@@ -214,6 +280,7 @@ function logout() {
     location.href = "index.html";
   });
 }
+
 
 // =============================
 // 시작
@@ -224,14 +291,14 @@ window.onload = () => {
 
 
 
-
-//Firestore 댓글 추가 함수
-
+// =============================
+// Firestore 댓글 추가
+// =============================
 async function addComment() {
   const commentText = document.getElementById("comment-input").value.trim();
   if (!commentText) return;
 
-  const problemId = questions[current].id; 
+  const problemId = questions[current].id;
 
   await db
     .collection("problems")
@@ -248,10 +315,9 @@ async function addComment() {
 }
 
 
-
-
-//Firestore 댓글 로딩 함수
-
+// =============================
+// Firestore 댓글 로딩
+// =============================
 async function loadComments(problemId) {
   const listBox = document.getElementById("comment-list");
   listBox.innerHTML = "로딩중...";
@@ -275,9 +341,3 @@ async function loadComments(problemId) {
     `;
   });
 }
-
-
-
-
-
-
