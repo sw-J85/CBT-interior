@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-  <meta charset="UTF-8">
-  <title>CBT 메인</title>
-  <link rel="stylesheet" href="./css/style.css">
+  <meta charset="UTF-8" />
+  <title>HIVEWORKS CBT</title>
+  <link rel="stylesheet" href="./css/style.css" />
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -15,89 +16,74 @@
 
 <body class="dark">
 
-<!-- HEADER -->
-<header class="hw-header">
-  <div class="hw-title">HIVEWORKS CBT</div>
-  <button class="hw-btn-logout" onclick="logout()">LOGOUT</button>
-</header>
+  <!-- HEADER -->
+  <header class="hw-header">
+    <div class="hw-title">HIVEWORKS CBT</div>
+    <button class="hw-btn-logout" onclick="logout()">LOGOUT</button>
+  </header>
 
-<!-- MAIN -->
-<div class="hw-container">
+  <!-- MAIN -->
+  <div class="hw-container">
+    <div class="hw-card" style="text-align: center; padding-bottom: 40px;">
 
-  <div class="hw-card" style="text-align:center;">
+      <h2 style="margin-bottom: 30px;">메인 메뉴</h2>
 
-      <h2 style="margin-bottom:20px;">메인 메뉴</h2>
+      <!-- =========================================================== -->
+      <!--                      🔥  2-컬럼 필터 영역                     -->
+      <!-- =========================================================== -->
 
-      <!-- =========================== -->
-      <!--  과목 / 출제자 자동 생성 영역 -->
-      <!-- =========================== -->
+      <div class="filter-container">
 
+        <!-- ▣ LEFT: 과목 -->
+        <div class="filter-column">
+          <h3>📘 과목 선택</h3>
 
-
-            <!-- =========================== -->
-      <!-- 아코디언 기반 과목 선택 -->
-      <!-- =========================== -->
-      <div class="filter-box">
-        <div class="filter-header" onclick="toggleAccordion('subject-area')">
-          📘 과목 선택
+          <div id="subject-list" class="filter-grid">
+            <!-- main-filter.js 가 자동으로 채워 넣음 -->
+          </div>
         </div>
-        <div id="subject-area" class="filter-content">
-          <div id="subject-list"></div>
+
+        <!-- ▣ RIGHT: 출제자 -->
+        <div class="filter-column">
+          <h3>👤 출제자 선택</h3>
+
+          <div id="creator-list" class="filter-grid">
+            <!-- main-filter.js 가 자동으로 채워 넣음 -->
+          </div>
         </div>
-      </div>
-      
-      <!-- =========================== -->
-      <!-- 아코디언 기반 출제자 선택 -->
-      <!-- =========================== -->
-      <div class="filter-box">
-        <div class="filter-header" onclick="toggleAccordion('creator-area')">
-          👤 출제자 선택
-        </div>
-        <div id="creator-area" class="filter-content">
-          <div id="creator-list"></div>
-        </div>
+
       </div>
 
-      
-      <br><br>
-      
-      <button class="hw-btn-submit" onclick="startCustomExam()">문제풀이 시작</button>
-      <button class="hw-btn-submit" onclick="startMockTest()">모의고사 모드</button>
+      <!-- =========================================================== -->
+      <!--                     🔥  버튼 영역                             -->
+      <!-- =========================================================== -->
 
-      <button class="hw-btn-next" onclick="viewStats()">
-        나의 기록
-      </button>
+      <div style="margin-top: 30px;">
+        <button class="hw-btn-submit" onclick="startCustomExam()">문제풀이 시작</button>
+        <button class="hw-btn-submit" onclick="startMockTest()">모의고사 모드</button>
+        <button class="hw-btn-next" onclick="viewStats()">나의 기록</button>
+      </div>
 
+    </div>
   </div>
 
-</div>
+  <script>
+    function startExam() {
+      window.location.href = "exam.html";
+    }
 
-<script>
-  function startExam() {
-    window.location.href = "exam.html";
-  }
+    function viewStats() {
+      window.location.href = "stats.html";
+    }
 
-  function viewStats() {
-    window.location.href = "stats.html";
-  }
+    function logout() {
+      auth.signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    }
+  </script>
 
-  function logout() {
-    auth.signOut().then(() => {
-      window.location.href = "index.html";
-    });
-  }
-</script>
-  
-<script>
-function toggleAccordion(id) {
-  document.getElementById(id).classList.toggle("open");
-}
-</script>
-
-<script src="./js/main-filter.js"></script>
-
+  <script src="./js/main-filter.js"></script>
 </body>
+
 </html>
-
-
-
