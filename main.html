@@ -28,9 +28,20 @@
 
       <h2 style="margin-bottom:20px;">메인 메뉴</h2>
 
-      <button class="hw-btn-submit" onclick="startExam()">
-        문제풀이 시작
-      </button>
+      <!-- =========================== -->
+      <!--  과목 / 출제자 자동 생성 영역 -->
+      <!-- =========================== -->
+
+      <h3>📌 과목 선택</h3>
+      <div id="subject-list"></div>
+      
+      <h3>📌 출제자 선택</h3>
+      <div id="creator-list"></div>
+      
+      <br><br>
+      
+      <button class="hw-btn-submit" onclick="startCustomExam()">문제풀이 시작</button>
+      <button class="hw-btn-submit" onclick="startMockTest()">모의고사 모드</button>
 
       <button class="hw-btn-next" onclick="viewStats()">
         나의 기록
@@ -55,6 +66,8 @@
     });
   }
 </script>
+<script src="./js/main-filter.js"></script>
 
 </body>
 </html>
+
