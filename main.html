@@ -32,11 +32,32 @@
       <!--  과목 / 출제자 자동 생성 영역 -->
       <!-- =========================== -->
 
-      <h3>📌 과목 선택</h3>
-      <div id="subject-list"></div>
+
+
+            <!-- =========================== -->
+      <!-- 아코디언 기반 과목 선택 -->
+      <!-- =========================== -->
+      <div class="filter-box">
+        <div class="filter-header" onclick="toggleAccordion('subject-area')">
+          📘 과목 선택
+        </div>
+        <div id="subject-area" class="filter-content">
+          <div id="subject-list"></div>
+        </div>
+      </div>
       
-      <h3>📌 출제자 선택</h3>
-      <div id="creator-list"></div>
+      <!-- =========================== -->
+      <!-- 아코디언 기반 출제자 선택 -->
+      <!-- =========================== -->
+      <div class="filter-box">
+        <div class="filter-header" onclick="toggleAccordion('creator-area')">
+          👤 출제자 선택
+        </div>
+        <div id="creator-area" class="filter-content">
+          <div id="creator-list"></div>
+        </div>
+      </div>
+
       
       <br><br>
       
@@ -70,4 +91,5 @@
 
 </body>
 </html>
+
 
