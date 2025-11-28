@@ -279,6 +279,11 @@ body.dark {
 
 
 
+#hint {
+  white-space: pre-wrap;   /* 줄바꿈 자동 반영 */
+  line-height: 1.4;
+}
+
 
 
 
