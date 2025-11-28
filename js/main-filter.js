@@ -5,10 +5,21 @@ async function loadFilterOptions() {
   const creators = new Set();
 
   snap.forEach(doc => {
-    const data = doc.data();
-    if (data.book) books.add(data.book);
-    if (data.creator) creators.add(data.creator);
-  });
+  const data = doc.data();
+
+  // book 정리
+  if (data.book) {
+    const cleanBook = data.book.trim();
+    if (cleanBook !== "") books.add(cleanBook);
+  }
+
+  // creator 정리
+  if (data.creator) {
+    const cleanCreator = data.creator.trim();
+    if (cleanCreator !== "") creators.add(cleanCreator);
+  }
+});
+
 
   const subjectDiv = document.getElementById("subject-list");
   const creatorDiv = document.getElementById("creator-list");
