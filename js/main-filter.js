@@ -76,3 +76,6 @@ function startMockTest() {
 
   window.location.href = "exam.html";
 }
+
+window.addEventListener("load", () => loadFilterOptions());
+
