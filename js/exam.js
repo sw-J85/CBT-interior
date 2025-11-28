@@ -13,7 +13,7 @@ let mockInterval;
 
 
 // =============================
-// 문제 불러오기 (필터 안정화 버전)
+// 문제 불러오기 (🔥 필터 완전 안정화 버전)
 // =============================
 async function loadProblems() {
 
@@ -21,30 +21,28 @@ async function loadProblems() {
   let creators = JSON.parse(localStorage.getItem("selectedCreators") || "[]");
   const mode = localStorage.getItem("mode") || "normal";
 
-  // 🔥 1) 필터 값이 없으면 자동으로 전체 처리
-  if (!Array.isArray(subjects) || subjects.length === 0) {
-    subjects = ["all"];
-  }
-  if (!Array.isArray(creators) || creators.length === 0) {
-    creators = ["all"];
-  }
+  // 🔥 필터 값이 없으면 전체
+  if (!Array.isArray(subjects) || subjects.length === 0) subjects = ["all"];
+  if (!Array.isArray(creators) || creators.length === 0) creators = ["all"];
 
-  let query = db.collection("problems");
+  // 🔥 1) Firestore는 ‘전체 로드’만 한다. 필터 금지
+  const snap = await db.collection("problems").get();
+  let list = snap.docs.map(doc => doc.data());
 
-  // 🔥 2) 과목 필터
+  // 🔥 2) JS에서 과목 필터링
   if (!subjects.includes("all")) {
-    query = query.where("book", "in", subjects);
+    list = list.filter(q => subjects.includes(q.book));
   }
 
-  // 🔥 3) 출제자 필터
+  // 🔥 3) JS에서 출제자 필터링
   if (!creators.includes("all")) {
-    query = query.where("creator", "in", creators);
+    list = list.filter(q => creators.includes(q.creator));
   }
 
-  const snap = await query.get();
-  questions = snap.docs.map(doc => doc.data());
+  // 🔥 4) 목록을 최종 적용
+  questions = list;
 
-  // 🔥 4) 모의고사 처리 (40문제 제한)
+  // 모드별 처리
   if (mode === "mock") {
     shuffle(questions);
     questions = questions.slice(0, 40);
@@ -60,6 +58,7 @@ async function loadProblems() {
   showQuestion();
   updateStats();
 }
+
 
 
 // =============================
@@ -339,4 +338,5 @@ async function loadComments(problemId) {
     `;
   });
 }
+
 
